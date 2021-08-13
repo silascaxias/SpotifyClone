@@ -15,9 +15,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         let window = UIWindow(frame: UIScreen.main.bounds)
+        if AuthenticatorManager.shared.isSignedIn {
+            window.rootViewController = TabBarController()
+        } else {
+            let navigationController = UINavigationController(rootViewController: WelcomeViewController())
+            navigationController.navigationBar.prefersLargeTitles = true
+            navigationController.viewControllers.first?.navigationItem.largeTitleDisplayMode = .always
+            window.rootViewController = navigationController
+        }
         window.rootViewController = TabBarController()
         window.makeKeyAndVisible()
         self.window = window
+        
+        AuthenticatorManager.shared.refreshAccessToken { result in
+            print(result)
+        }
         
         return true
     }

@@ -8,22 +8,55 @@
 import UIKit
 
 class WelcomeViewController: UIViewController {
-
+    
+    private let signInButton: UIButton = {
+        let button = UIButton()
+        button.backgroundColor = .white
+        button.setTitle("Sign In with Spotify", for: .normal)
+        button.setTitleColor(.blue, for: .normal)
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        title = "Spotify"
+        view.backgroundColor = .systemGreen
+        view.addSubview(signInButton)
+        signInButton.addTarget(self, action: #selector(didTappedSignIn), for: .touchUpInside)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        signInButton.frame = CGRect(
+            x: 20,
+            y: view.height - 50 - view.safeAreaInsets.bottom,
+            width: view.width - 40,
+            height: 50
+        )
     }
-    */
-
+    
+    @objc func didTappedSignIn() {
+        let viewController = AuthenticatorViewController()
+        viewController.signInDidCompleted = { [weak self] result in
+            DispatchQueue.main.async {
+                self?.signInDidCompleted(result: result)
+            }
+        }
+        viewController.navigationItem.largeTitleDisplayMode = .always
+        navigationController?.pushViewController(viewController, animated: true)
+    }
+        
+    private func signInDidCompleted(result: Bool) {
+        guard result else {
+            
+            let alert = UIAlertController(title: "Atenttion", message: "Error on signing with Spotify.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
+            return
+        }
+        
+        let tabBarController = TabBarController()
+        tabBarController.modalPresentationStyle = .fullScreen
+        present(tabBarController, animated: true)
+    }
 }

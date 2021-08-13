@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>REDIRECT_URI</key>
+	<string>https://open.spotify.com/</string>
+	<key>TOKEN_API_URL</key>
+	<string>https://accounts.spotify.com/api/token</string>
+	<key>CLIENT_SECRET</key>
+	<string>2212b06508534ab995b44e6d732f8257</string>
+	<key>CLIENT_ID</key>
+	<string>1ad84d26e8064704bc36d97d7103a470</string>
+	<key>BASE_URL</key>
+	<string>https://accounts.spotify.com/authorize</string>
+</dict>
+</plist>
