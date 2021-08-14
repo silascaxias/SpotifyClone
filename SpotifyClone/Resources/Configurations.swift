@@ -14,6 +14,7 @@ final class Configurations {
         case clientSecret = "CLIENT_SECRET"
         case clientID = "CLIENT_ID"
         case baseURL = "BASE_URL"
+        case baseAPIURL = "BASE_API_URL"
     }
     
     public static var redirectURI = getString(for: .redirectURI)
@@ -25,6 +26,8 @@ final class Configurations {
     public static var clientID = getString(for: .clientID)
     
     public static var baseURL = getString(for: .baseURL)
+    
+    public static var baseAPIURL = getString(for: .baseAPIURL)
     
     private static func getInfo(for key: PListKey) -> Any? {
         guard let infoDictPath = Bundle.main.path(forResource: "Configurations", ofType: "plist"),

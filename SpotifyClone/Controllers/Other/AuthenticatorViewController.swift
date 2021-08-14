@@ -53,7 +53,7 @@ extension AuthenticatorViewController: WKNavigationDelegate {
             webView.isHidden = true
             
             print("Code: \(code)")
-            AuthenticatorManager.shared.codeForToken(code: code) { [weak self] result in
+            AuthenticatorManager.shared.fetchToken(with: code) { [weak self] result in
                 DispatchQueue.main.async {
                     self?.navigationController?.popToRootViewController(animated: true)
                     self?.signInDidCompleted?(result)

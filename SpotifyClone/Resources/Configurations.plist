@@ -12,5 +12,7 @@
 	<string>1ad84d26e8064704bc36d97d7103a470</string>
 	<key>BASE_URL</key>
 	<string>https://accounts.spotify.com/authorize</string>
+	<key>BASE_API_URL</key>
+	<string>https://api.spotify.com/v1</string>
 </dict>
 </plist>
