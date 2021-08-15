@@ -127,7 +127,6 @@ final class APIManager {
             
             do {
                 let authenticationResponde = try JSONDecoder().decode(AuthenticationResponde.self, from: data)
-                print("Successfully refreshed")
                 updateRefreshingBlocks(authenticationResponde.accessToken)
                 authenticationResponde.saveData()
                 completion(true)

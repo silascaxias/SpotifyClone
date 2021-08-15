@@ -16,6 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         let window = UIWindow(frame: UIScreen.main.bounds)
         if AuthenticatorManager.shared.isSignedIn {
+            AuthenticatorManager.shared.checkIfNeededRefreshToken(completion: nil)
             window.rootViewController = TabBarController()
         } else {
             let navigationController = UINavigationController(rootViewController: WelcomeViewController())
@@ -26,10 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window.rootViewController = TabBarController()
         window.makeKeyAndVisible()
         self.window = window
-        
-        AuthenticatorManager.shared.refreshAccessToken { result in
-            print(result)
-        }
         
         return true
     }

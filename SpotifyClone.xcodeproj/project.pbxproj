@@ -32,8 +32,11 @@
 		D55CF80D26C5EB2C00B92E31 /* AudioTrack.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55CF80C26C5EB2C00B92E31 /* AudioTrack.swift */; };
 		D55CF80F26C5EB3800B92E31 /* Artist.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55CF80E26C5EB3800B92E31 /* Artist.swift */; };
 		D55CF81126C5EB4400B92E31 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55CF81026C5EB4400B92E31 /* UserProfile.swift */; };
-		D55CF81326C5F78C00B92E31 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55CF81226C5F78C00B92E31 /* Extensions.swift */; };
 		D55CF81526C6045400B92E31 /* AuthenticationResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = D55CF81426C6045400B92E31 /* AuthenticationResponse.swift */; };
+		D560F78826C9D3FD007348F7 /* TabBerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D560F78726C9D3FD007348F7 /* TabBerModel.swift */; };
+		D560F78B26C9D7BD007348F7 /* UIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D560F78A26C9D7BD007348F7 /* UIView.swift */; };
+		D560F78D26C9D7D8007348F7 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = D560F78C26C9D7D8007348F7 /* UserDefaults.swift */; };
+		D560F78F26C9D80A007348F7 /* UIImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D560F78E26C9D80A007348F7 /* UIImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -64,8 +67,11 @@
 		D55CF80C26C5EB2C00B92E31 /* AudioTrack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioTrack.swift; sourceTree = "<group>"; };
 		D55CF80E26C5EB3800B92E31 /* Artist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Artist.swift; sourceTree = "<group>"; };
 		D55CF81026C5EB4400B92E31 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
-		D55CF81226C5F78C00B92E31 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		D55CF81426C6045400B92E31 /* AuthenticationResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationResponse.swift; sourceTree = "<group>"; };
+		D560F78726C9D3FD007348F7 /* TabBerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBerModel.swift; sourceTree = "<group>"; };
+		D560F78A26C9D7BD007348F7 /* UIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIView.swift; sourceTree = "<group>"; };
+		D560F78C26C9D7D8007348F7 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
+		D560F78E26C9D80A007348F7 /* UIImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,13 +104,13 @@
 		D55CF7D126C5E7E000B92E31 /* SpotifyClone */ = {
 			isa = PBXGroup;
 			children = (
-				D55CF7EA26C5E83E00B92E31 /* Resources */,
-				D55CF80326C5EADE00B92E31 /* Managers */,
-				D55CF7E926C5E82B00B92E31 /* ViewModels */,
-				D55CF7E826C5E81F00B92E31 /* Models */,
-				D55CF7E726C5E81A00B92E31 /* Views */,
 				D55CF7E626C5E81300B92E31 /* Controllers */,
-				D55CF7E026C5E7E100B92E31 /* Info.plist */,
+				D560F78926C9D7AC007348F7 /* Extensions */,
+				D55CF80326C5EADE00B92E31 /* Managers */,
+				D55CF7E826C5E81F00B92E31 /* Models */,
+				D55CF7EA26C5E83E00B92E31 /* Resources */,
+				D55CF7E926C5E82B00B92E31 /* ViewModels */,
+				D55CF7E726C5E81A00B92E31 /* Views */,
 			);
 			path = SpotifyClone;
 			sourceTree = "<group>";
@@ -135,6 +141,7 @@
 				D55CF81026C5EB4400B92E31 /* UserProfile.swift */,
 				D55CF81426C6045400B92E31 /* AuthenticationResponse.swift */,
 				D50D66C726C73AF000C67325 /* SettingsModels.swift */,
+				D560F78726C9D3FD007348F7 /* TabBerModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -149,10 +156,10 @@
 		D55CF7EA26C5E83E00B92E31 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				D55CF7E026C5E7E100B92E31 /* Info.plist */,
 				D55CF7DB26C5E7E100B92E31 /* Assets.xcassets */,
 				D55CF7D426C5E7E000B92E31 /* SceneDelegate.swift */,
 				D55CF7D226C5E7E000B92E31 /* AppDelegate.swift */,
-				D55CF81226C5F78C00B92E31 /* Extensions.swift */,
 				D50D66C326C6EB3600C67325 /* Configurations.plist */,
 				D50D66C526C6EC6200C67325 /* Configurations.swift */,
 			);
@@ -192,6 +199,16 @@
 				D55CF80826C5EB0B00B92E31 /* HapticsManager.swift */,
 			);
 			path = Managers;
+			sourceTree = "<group>";
+		};
+		D560F78926C9D7AC007348F7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D560F78A26C9D7BD007348F7 /* UIView.swift */,
+				D560F78C26C9D7D8007348F7 /* UserDefaults.swift */,
+				D560F78E26C9D80A007348F7 /* UIImageView.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,8 +281,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D560F78B26C9D7BD007348F7 /* UIView.swift in Sources */,
 				D55CF7F026C5EA3800B92E31 /* SearchViewController.swift in Sources */,
 				D55CF80B26C5EB2200B92E31 /* Playlist.swift in Sources */,
+				D560F78826C9D3FD007348F7 /* TabBerModel.swift in Sources */,
 				D55CF80526C5EAF000B92E31 /* AuthenticatorManager.swift in Sources */,
 				D55CF80226C5EAC300B92E31 /* SearchResultsViewController.swift in Sources */,
 				D50D66C826C73AF000C67325 /* SettingsModels.swift in Sources */,
@@ -278,13 +297,14 @@
 				D55CF7F626C5EA6F00B92E31 /* AuthenticatorViewController.swift in Sources */,
 				D55CF7D326C5E7E000B92E31 /* AppDelegate.swift in Sources */,
 				D55CF81126C5EB4400B92E31 /* UserProfile.swift in Sources */,
-				D55CF81326C5F78C00B92E31 /* Extensions.swift in Sources */,
+				D560F78F26C9D80A007348F7 /* UIImageView.swift in Sources */,
 				D55CF7F226C5EA4800B92E31 /* LibraryViewController.swift in Sources */,
 				D55CF80F26C5EB3800B92E31 /* Artist.swift in Sources */,
 				D55CF80026C5EAAC00B92E31 /* PlaylistViewController.swift in Sources */,
 				D55CF7D526C5E7E000B92E31 /* SceneDelegate.swift in Sources */,
 				D55CF7FE26C5EA9C00B92E31 /* PlayerViewController.swift in Sources */,
 				D55CF80726C5EAFE00B92E31 /* APIManager.swift in Sources */,
+				D560F78D26C9D7D8007348F7 /* UserDefaults.swift in Sources */,
 				D50D66C626C6EC6200C67325 /* Configurations.swift in Sources */,
 				D55CF81526C6045400B92E31 /* AuthenticationResponse.swift in Sources */,
 				D55CF7FA26C5EA8300B92E31 /* SettingsViewController.swift in Sources */,
@@ -427,7 +447,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = SpotifyClone/Info.plist;
+				INFOPLIST_FILE = SpotifyClone/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -445,7 +465,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = SpotifyClone/Info.plist;
+				INFOPLIST_FILE = SpotifyClone/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

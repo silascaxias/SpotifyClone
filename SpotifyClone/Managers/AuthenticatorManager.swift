@@ -49,7 +49,7 @@ final class AuthenticatorManager {
         }
         
         if needRefreshToken {
-            refreshAccessToken { result in
+            checkIfNeededRefreshToken { result in
                 if let token = UserDefaults.standard.accessToken, result {
                     completion(token)
                 }
@@ -59,13 +59,13 @@ final class AuthenticatorManager {
         }
     }
     
-    func refreshAccessToken(completion: @escaping (Bool) -> Void) {
+    func checkIfNeededRefreshToken(completion: ((Bool) -> Void)?) {
         guard !refreshingToken else {
             return
         }
         
         guard needRefreshToken else {
-            completion(true)
+            completion?(true)
             return
         }
         
@@ -76,7 +76,7 @@ final class AuthenticatorManager {
         refreshingToken = true
         
         APIManager.shared.refrechAccessToken(
-            refreshToken: refreshToken, completion: completion) { [weak self] in
+            refreshToken: refreshToken, completion: completion ?? { _ in}) { [weak self] in
             self?.refreshingToken = false
         } updateRefreshingBlocks: { [weak self] accessToken in
             self?.onRefreshBlocks.forEach{ $0(accessToken) }
