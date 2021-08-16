@@ -17,6 +17,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let window = UIWindow(windowScene: windowScene)
         if AuthenticatorManager.shared.isSignedIn {
+            AuthenticatorManager.shared.checkIfNeededRefreshToken(completion: nil)
             window.rootViewController = TabBarController()
         } else {
             let navigationController = UINavigationController(rootViewController: WelcomeViewController())

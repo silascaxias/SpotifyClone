@@ -35,13 +35,8 @@ final class AuthenticatorManager {
         return currentDate >= UserDefaults.standard.expirationDate ?? Date()
     }
     
-    public func fetchToken(with code: String, completion: @escaping ((Bool) -> Void)) {
-        APIManager.shared.fetchToken(with: code, completion: completion)
-    }
-    
     private var onRefreshBlocks = [((String) -> Void)]()
     
-    // Get a valid token on API calls
     public func withValidToken(completion: @escaping (String) -> Void) {
         guard !refreshingToken else {
             onRefreshBlocks.append(completion)
@@ -75,12 +70,98 @@ final class AuthenticatorManager {
         
         refreshingToken = true
         
-        APIManager.shared.refrechAccessToken(
-            refreshToken: refreshToken, completion: completion ?? { _ in}) { [weak self] in
-            self?.refreshingToken = false
-        } updateRefreshingBlocks: { [weak self] accessToken in
-            self?.onRefreshBlocks.forEach{ $0(accessToken) }
-            self?.onRefreshBlocks.removeAll()
+        refrechAccessToken(refreshToken: refreshToken, completion: completion ?? { _ in})
+    }
+    
+    public func fetchToken(with code: String, completion: @escaping ((Bool) -> Void)) {
+        if let url = URL(string: Configurations.tokenAPIURL) {
+            
+            var components = URLComponents()
+            components.queryItems = [
+                URLQueryItem(name: "grant_type", value: "authorization_code"),
+                URLQueryItem(name: "code", value: code),
+                URLQueryItem(name: "redirect_uri", value: Configurations.redirectURI )
+            ]
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.httpBody = components.query?.data(using: .utf8)
+            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            
+            let basicToken = "\(Configurations.clientID):\(Configurations.clientSecret)"
+            let data = basicToken.data(using: .utf8)
+            guard let base64String = data?.base64EncodedString() else {
+                print("Failed to get BASE64")
+                completion(false)
+                return
+            }
+            
+            request.setValue("Basic \(base64String)", forHTTPHeaderField: "Authorization")
+            
+            APIManager.shared.getData(from: request) { data, _, error in
+                guard let data = data, error == nil  else {
+                    completion(false)
+                    return
+                }
+                
+                do {
+                    let authenticationResponde = try JSONDecoder().decode(AuthenticationResponde.self, from: data)
+                    authenticationResponde.saveData()
+                    completion(true)
+                } catch {
+                    print(error.localizedDescription)
+                    completion(false)
+                }
+            }
         }
+    }
+    
+    public func refrechAccessToken(refreshToken: String, completion: @escaping (Bool) -> Void) {
+        
+        guard let url = URL(string: Configurations.tokenAPIURL) else {
+            return
+        }
+    
+        var components = URLComponents()
+        components.queryItems = [
+            URLQueryItem(name: "grant_type", value: "refresh_token"),
+            URLQueryItem(name: "refresh_token", value: refreshToken )
+        ]
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.httpBody = components.query?.data(using: .utf8)
+        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+        
+        let basicToken = "\(Configurations.clientID):\(Configurations.clientSecret)"
+        let data = basicToken.data(using: .utf8)
+        guard let base64String = data?.base64EncodedString() else {
+            print("Failed to get BASE64")
+            completion(false)
+            return
+        }
+        
+        request.setValue("Basic \(base64String)", forHTTPHeaderField: "Authorization")
+        
+        APIManager.shared.getData(from: request) { [weak self] data, _, error in
+            self?.refreshingToken = false
+            
+            guard let data = data, error == nil  else {
+                completion(false)
+                return
+            }
+            
+            do {
+                let authenticationResponde = try JSONDecoder().decode(AuthenticationResponde.self, from: data)
+                self?.onRefreshBlocks.forEach{ $0(authenticationResponde.accessToken) }
+                self?.onRefreshBlocks.removeAll()
+                authenticationResponde.saveData()
+                completion(true)
+            } catch {
+                print(error.localizedDescription)
+                completion(false)
+            }
+        }
+
     }
 }

@@ -12,7 +12,7 @@ final class APIManager {
     
     private init() {}
     
-    private func fullURL(api: API) -> URL? { URL(string: Configurations.baseAPIURL + api.rawValue) }
+    private func fullURL(api: API, parameters: String = "") -> URL? { URL(string: Configurations.baseAPIURL + api.rawValue + parameters) }
     
     public func getData(from url: URL, completion: @escaping (Data?, URLResponse?, Error?) -> ()) {
         URLSession.shared.dataTask(with: url, completionHandler: completion).resume()
@@ -43,106 +43,97 @@ final class APIManager {
         }
     }
     
-    public func fetchToken(with code: String, completion: @escaping ((Bool) -> Void)) {
-        if let url = URL(string: Configurations.tokenAPIURL) {
-            
-            var components = URLComponents()
-            components.queryItems = [
-                URLQueryItem(name: "grant_type", value: "authorization_code"),
-                URLQueryItem(name: "code", value: code),
-                URLQueryItem(name: "redirect_uri", value: Configurations.redirectURI )
-            ]
-            
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.httpBody = components.query?.data(using: .utf8)
-            request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-            
-            let basicToken = "\(Configurations.clientID):\(Configurations.clientSecret)"
-            let data = basicToken.data(using: .utf8)
-            guard let base64String = data?.base64EncodedString() else {
-                print("Failed to get BASE64")
-                completion(false)
-                return
-            }
-            
-            request.setValue("Basic \(base64String)", forHTTPHeaderField: "Authorization")
-            
-            APIManager.shared.getData(from: request) { data, _, error in
-                guard let data = data, error == nil  else {
-                    completion(false)
+    public func getNewReleases(completion: @escaping (Result<NewReleasesResponses, Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .browseNewReleases, parameters: "?limit=50"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
                     return
                 }
                 
                 do {
-                    let authenticationResponde = try JSONDecoder().decode(AuthenticationResponde.self, from: data)
-                    authenticationResponde.saveData()
-                    completion(true)
+                    let result = try JSONDecoder().decode(NewReleasesResponses.self, from: data)
+                    completion(.success(result))
                 } catch {
-                    print(error.localizedDescription)
-                    completion(false)
+                    completion(.failure(error))
                 }
             }
         }
     }
     
-    public func refrechAccessToken(
-        refreshToken: String,
-        completion: @escaping (Bool) -> Void,
-        updateRefreshing: @escaping () -> Void,
-        updateRefreshingBlocks: @escaping (String) -> Void) {
-        
-        guard let url = URL(string: Configurations.tokenAPIURL) else {
-            return
-        }
-    
-        var components = URLComponents()
-        components.queryItems = [
-            URLQueryItem(name: "grant_type", value: "refresh_token"),
-            URLQueryItem(name: "refresh_token", value: refreshToken )
-        ]
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = components.query?.data(using: .utf8)
-        request.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-        
-        let basicToken = "\(Configurations.clientID):\(Configurations.clientSecret)"
-        let data = basicToken.data(using: .utf8)
-        guard let base64String = data?.base64EncodedString() else {
-            print("Failed to get BASE64")
-            completion(false)
-            return
-        }
-        
-        request.setValue("Basic \(base64String)", forHTTPHeaderField: "Authorization")
-        
-        APIManager.shared.getData(from: request) { data, _, error in
-            updateRefreshing()
-            
-            guard let data = data, error == nil  else {
-                completion(false)
-                return
-            }
-            
-            do {
-                let authenticationResponde = try JSONDecoder().decode(AuthenticationResponde.self, from: data)
-                updateRefreshingBlocks(authenticationResponde.accessToken)
-                authenticationResponde.saveData()
-                completion(true)
-            } catch {
-                print(error.localizedDescription)
-                completion(false)
+    public func getFeaturedPlaylists(completion: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .browseFeaturedPlaylists, parameters: "?limit=50"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
             }
         }
-
     }
     
-    private func createRequest(
+    public func getRecommendations(genres: Set<String>, completion: @escaping (Result<RecommendationsResponse, Error>) -> Void) {
+        let seeds = genres.joined(separator: ",")
+        
+        createRequest(
+            with: fullURL(api: .recommendations, parameters: "?limit=50&seed_genres=\(seeds)"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+
+                do {
+                    let result = try JSONDecoder().decode(RecommendationsResponse.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    public func getRecommendedGenres(completion: @escaping (Result<RecommendedGenresResponse, Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .recommendedGenres),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+
+                do {
+                    let result = try JSONDecoder().decode(RecommendedGenresResponse.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    private func createRequest (
         with url: URL?,
         type: HTTPMethod,
-        completion: @escaping (URLRequest) -> Void) {
-        
+        completion: @escaping (URLRequest) -> Void
+    ) {
         AuthenticatorManager.shared.withValidToken { token in
             guard let url = url else { return }
             
@@ -167,5 +158,9 @@ final class APIManager {
     
     enum API: String {
         case me = "/me"
+        case browseNewReleases = "/browse/new-releases"
+        case browseFeaturedPlaylists = "/browse/featured-playlists"
+        case recommendations = "/recommendations"
+        case recommendedGenres = "/recommendations/available-genre-seeds"
     }
 }

@@ -6,3 +6,15 @@
 //
 
 import Foundation
+
+struct Artist: Codable {
+    let id: String
+    let externalUrls: ExternalUrls
+    let name, type: String
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case externalUrls = "external_urls"
+        case name, type
+    }
+}
