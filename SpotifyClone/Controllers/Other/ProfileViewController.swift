@@ -32,7 +32,7 @@ class ProfileViewController: UIViewController {
     }
 
     @objc func didTapSyncImage() {
-        UserDefaults.standard.cacheProfileImage = nil
+        UserDefaults.standard.setImageCache(key: UserDefaultsKey.CACHE_PROFILE_IMAGE.rawValue, image: nil)
         
         models.removeAll()
         tableView.tableHeaderView = nil
@@ -84,7 +84,8 @@ class ProfileViewController: UIViewController {
         headerView.addSubview(imageView)
         imageView.center = headerView.center
         imageView.contentMode = .scaleAspectFill
-        imageView.downloadImage(from: url)
+        imageView.image = UIImage(systemName: "photo")
+        imageView.downloadImage(from: url, keyForCache: UserDefaultsKey.CACHE_PROFILE_IMAGE.rawValue)
         imageView.layer.masksToBounds = true
         imageView.layer.cornerRadius = imageSize / 2
         

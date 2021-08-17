@@ -7,36 +7,35 @@
 
 import UIKit
 
+enum UserDefaultsKey: String {
+    case ACCESS_TOKEN = "ACCESS_TOKEN"
+    case REFRESH_TOKEN = "REFRESH_TOKEN"
+    case EXPIRATION_DATE = "EXPIRATION_DATE"
+    case CACHE_PROFILE_IMAGE = "CACHE_PROFILE_IMAGE"
+}
+
 extension UserDefaults {
     
-    private struct Key {
-        
-        static let ACCESS_TOKEN = "ACCESS_TOKEN"
-
-        static let REFRESH_TOKEN = "REFRESH_TOKEN"
-        
-        static let EXPIRATION_DATE = "EXPIRATION_DATE"
-        
-        static let CACHE_PROFILE_IMAGE = "CACHE_PROFILE_IMAGE"
-    }
-    
     var accessToken: String? {
-        get { return string(forKey: Key.ACCESS_TOKEN) }
-        set { set(newValue, forKey: Key.ACCESS_TOKEN) }
+        get { return string(forKey: UserDefaultsKey.ACCESS_TOKEN.rawValue) }
+        set { set(newValue, forKey: UserDefaultsKey.ACCESS_TOKEN.rawValue) }
     }
     
     var refreshToken: String? {
-        get { return string(forKey: Key.REFRESH_TOKEN) }
-        set { set(newValue, forKey: Key.REFRESH_TOKEN) }
+        get { return string(forKey: UserDefaultsKey.REFRESH_TOKEN.rawValue) }
+        set { set(newValue, forKey: UserDefaultsKey.REFRESH_TOKEN.rawValue) }
     }
     
     var expirationDate: Date? {
-        get { return value(forKey: Key.EXPIRATION_DATE) as? Date }
-        set { set(newValue, forKey: Key.EXPIRATION_DATE) }
+        get { return value(forKey: UserDefaultsKey.EXPIRATION_DATE.rawValue) as? Date }
+        set { set(newValue, forKey: UserDefaultsKey.EXPIRATION_DATE.rawValue) }
     }
     
-    var cacheProfileImage: Data? {
-        get { return value(forKey: Key.CACHE_PROFILE_IMAGE) as? Data }
-        set { set(newValue, forKey: Key.CACHE_PROFILE_IMAGE) }
+    func setImageCache(key: String, image: Data?) {
+        set(image, forKey: key)
+    }
+    
+    func getImageCache(key: String) -> Data? {
+        return value(forKey: key) as? Data
     }
 }
