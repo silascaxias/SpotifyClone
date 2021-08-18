@@ -12,7 +12,7 @@ struct FeaturedPlaylistsResponse: Codable {
 }
 
 struct PlaylistResponse: Codable {
-    let items: [Playlists]
+    let items: [Playlist]
 }
 
 struct User: Codable {

@@ -22,6 +22,31 @@ final class APIManager {
         URLSession.shared.dataTask(with: request, completionHandler: completion).resume()
     }
     
+    // MARK: - Albums
+    
+    public func getAlbumDetails(for album: Album, completion: @escaping (Result<AlbumDetailsResponse, Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .albums, parameters: "/\(album.id ?? "")"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(AlbumDetailsResponse.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    // MARK: - Profile
+    
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         createRequest(
             with: fullURL(api: .me),
@@ -42,6 +67,8 @@ final class APIManager {
             }
         }
     }
+    
+    // MARK: - Releases
     
     public func getNewReleases(completion: @escaping (Result<NewReleasesResponses, Error>) -> Void) {
         createRequest(
@@ -64,6 +91,8 @@ final class APIManager {
         }
     }
     
+    // MARK: - Playlists
+    
     public func getFeaturedPlaylists(completion: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
         createRequest(
             with: fullURL(api: .browseFeaturedPlaylists, parameters: "?limit=50"),
@@ -84,6 +113,29 @@ final class APIManager {
             }
         }
     }
+    
+    public func getPlaylistDetails(for playlist: Playlist, completion: @escaping (Result<PlaylistDetailsResponse, Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .playlists, parameters: "/\(playlist.id ?? "")"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(PlaylistDetailsResponse.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    // MARK: - Recommendations
     
     public func getRecommendations(genres: Set<String>, completion: @escaping (Result<RecommendationsResponse, Error>) -> Void) {
         let seeds = genres.joined(separator: ",")
@@ -129,6 +181,8 @@ final class APIManager {
         }
     }
     
+    // MARK: - BaseRequest
+    
     private func createRequest (
         with url: URL?,
         type: HTTPMethod,
@@ -162,5 +216,7 @@ final class APIManager {
         case browseFeaturedPlaylists = "/browse/featured-playlists"
         case recommendations = "/recommendations"
         case recommendedGenres = "/recommendations/available-genre-seeds"
+        case albums = "/albums"
+        case playlists = "/playlists"
     }
 }

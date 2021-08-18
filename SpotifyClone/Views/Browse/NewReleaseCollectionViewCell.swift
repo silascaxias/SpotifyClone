@@ -111,7 +111,6 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
 }
 
 struct NewReleasesCellViewModell {
-    let id: String
     let name: String
     let imageURL: URL?
     let numberOfTracks: Int

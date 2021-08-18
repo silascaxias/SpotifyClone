@@ -89,7 +89,6 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
 }
 
 struct FeaturedPlaylistCellViewModel {
-    let id: String
     let name: String
     let imageURL: URL?
     let creatorName: String
@@ -105,4 +104,3 @@ struct FeaturedPlaylistCellViewModel {
         return cell ?? UICollectionViewCell()
     }
 }
-

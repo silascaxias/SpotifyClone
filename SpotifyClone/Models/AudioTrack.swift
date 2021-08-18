@@ -13,17 +13,14 @@ struct AudioTrack: Codable {
     let discNumber: Int?
     let durationMs: Int?
     let artists: [Artist]?
-    let popularity: Int?
     let availableMarkets: [String]?
     let explicit: Bool?
     let externalUrls: ExternalUrls?
 
     enum CodingKeys: String, CodingKey {
-        case id, name, album, explicit
+        case id, name, album, explicit, artists
         case discNumber = "disc_number"
         case durationMs = "duration_ms"
-        case artists
-        case popularity
         case availableMarkets = "available_markets"
         case externalUrls = "external_urls"
     }

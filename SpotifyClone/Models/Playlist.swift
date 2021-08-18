@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Playlists: Codable {
+struct Playlist: Codable {
     let desc: String?
     let externalUrls: ExternalUrls?
     let id: String?
