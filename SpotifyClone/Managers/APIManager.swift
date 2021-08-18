@@ -22,6 +22,51 @@ final class APIManager {
         URLSession.shared.dataTask(with: request, completionHandler: completion).resume()
     }
     
+    // MARK: - Category
+    
+    public func getCategories(completion: @escaping (Result<[Category], Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .categories, parameters: "?limit=50"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(AllCategoriesResponse.self, from: data)
+                    completion(.success(result.categories?.items ?? []))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
+    public func getCategoryPlaylists(with category: Category, completion: @escaping (Result<[Playlist]?, Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .categories, parameters: "/\(category.id ?? "")/playlists?limit=50"),
+            type: .GET
+        ) { [weak self] request in
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+                
+                do {
+                    let result = try JSONDecoder().decode(CategoryPlaylistsResponse.self, from: data)
+                    let playlists = result.playlists?.items
+                    completion(.success(playlists))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+
     // MARK: - Albums
     
     public func getAlbumDetails(for album: Album, completion: @escaping (Result<AlbumDetailsResponse, Error>) -> Void) {
@@ -218,5 +263,6 @@ final class APIManager {
         case recommendedGenres = "/recommendations/available-genre-seeds"
         case albums = "/albums"
         case playlists = "/playlists"
+        case categories = "/browse/categories"
     }
 }
