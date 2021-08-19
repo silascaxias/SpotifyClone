@@ -226,6 +226,44 @@ final class APIManager {
         }
     }
     
+    // MARK: - Search
+    
+    public func getSearchResults(with query: String, completion: @escaping (Result<[SearchResult], Error>) -> Void) {
+        createRequest(
+            with: fullURL(api: .search, parameters: "?limit=50&type=album,artist,playlist,track&q=\(query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"),
+            type: .GET
+        ) { [weak self] request in
+            
+            self?.getData(from: request) { data, _, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.onGetData))
+                    return
+                }
+
+                do {
+                    let result = try JSONDecoder().decode(SearchResultResponse.self, from: data)
+                    var searchResults: [SearchResult] = []
+                    
+                    guard let tracks = result.tracks?.items,
+                          let album = result.albums?.items,
+                          let artist = result.artists?.items,
+                          let playlist = result.playlists?.items else {
+                        return
+                    }
+                    
+                    searchResults.append(contentsOf: tracks.compactMap({ SearchResult.track(model: $0) }))
+                    searchResults.append(contentsOf: album.compactMap({ SearchResult.album(model: $0) }))
+                    searchResults.append(contentsOf: artist.compactMap({ SearchResult.artist(model: $0) }))
+                    searchResults.append(contentsOf: playlist.compactMap({ SearchResult.playlist(model: $0) }))
+                    
+                    completion(.success(searchResults))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+        }
+    }
+    
     // MARK: - BaseRequest
     
     private func createRequest (
@@ -264,5 +302,6 @@ final class APIManager {
         case albums = "/albums"
         case playlists = "/playlists"
         case categories = "/browse/categories"
+        case search = "/search"
     }
 }
