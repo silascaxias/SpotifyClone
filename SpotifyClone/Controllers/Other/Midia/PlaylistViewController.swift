@@ -1,13 +1,13 @@
 //
-//  AlbumViewController.swift
+//  PlaylistViewController.swift
 //  SpotifyClone
 //
-//  Created by Silas Da Silva Caxias on 16/08/21.
+//  Created by Silas Da Silva Caxias on 12/08/21.
 //
 
 import UIKit
 
-class AlbumViewController: UIViewController {
+class PlaylistViewController: UIViewController {
     
     private let collectionView: UICollectionView = {
         let collectionView = UICollectionView(
@@ -47,14 +47,14 @@ class AlbumViewController: UIViewController {
         return collectionView
     }()
 
-    private var viewModels = [AlbumTrackCellViewModel]()
+    private let playlist: Playlist
     
-    private let album: Album
+    private var viewModels = [RecommendedTrackCellViewModel]()
     
     private var tracks = [AudioTrack]()
     
-    init(album: Album) {
-        self.album = album
+    init(playlist: Playlist) {
+        self.playlist = playlist
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -64,9 +64,6 @@ class AlbumViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = album.name
-        view.backgroundColor = .systemBackground
         
         setupView()
         fetchData()
@@ -79,29 +76,47 @@ class AlbumViewController: UIViewController {
     }
     
     private func setupView() {
-        title = album.name
+        title = playlist.name
         view.backgroundColor = .systemBackground
         view.addSubview(collectionView)
         collectionView.backgroundColor = .systemBackground
         collectionView.delegate = self
         collectionView.dataSource = self
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action,
+                                                            target: self,
+                                                            action: #selector(didTapShare))
     }
-
+    
+    @objc func didTapShare() {
+        guard let url = URL(string: playlist.externalUrls?.spotify ?? "") else {
+            return
+        }
+        
+        let activityViewController = UIActivityViewController(
+            activityItems: [url],
+            applicationActivities: []
+        )
+        activityViewController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityViewController, animated: true)
+    }
+    
     private func fetchData() {
-        APIManager.shared.getAlbumDetails(for: album) { [weak self] result in
+        APIManager.shared.getPlaylistDetails(for: playlist) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let result):
-                    self?.tracks = result.tracks?.items ?? []
-                    self?.viewModels = result.tracks?.items?.compactMap({
-                        AlbumTrackCellViewModel(
-                            name: $0.name ?? "-",
-                            artistName: $0.artists?.first?.name ?? "-"
-                        )
-                    }) ?? []
-                    self?.collectionView.reloadData()
-                case .failure(let error):
-                    print(error.localizedDescription)
+                    case .success(let result):
+                        self?.tracks = result.tracks?.items?.compactMap({ $0.track }) ?? []
+                        self?.viewModels = result.tracks?.items?.compactMap({
+                            RecommendedTrackCellViewModel(
+                                name: $0.track?.name ?? "-",
+                                artistName: $0.track?.artists?.first?.name ?? "-",
+                                imageURL: URL(string: $0.track?.album?.images?.first?.url ?? "")
+                            )
+                        }) ?? []
+                        self?.collectionView.reloadData()
+                    case .failure(let error):
+                        print(error.localizedDescription)
                 }
             }
         }
@@ -110,7 +125,7 @@ class AlbumViewController: UIViewController {
 
 // MARK: - CollectionView
 
-extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModels.count
     }
@@ -121,10 +136,10 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         return PlaylistHeaderReusableViewModel (
-            name: album.name ?? "-",
-            ownerName: album.artists?.first?.name ?? "-",
-            description: "Release Date: \(String.formattedDate(string: album.releaseDate ?? "-"))",
-            imageURL: URL(string: album.images?.first?.url ?? ""),
+            name: playlist.name ?? "-",
+            ownerName: playlist.owner?.displayName ?? "-",
+            description: playlist.desc ?? "-",
+            imageURL: URL(string: playlist.images?.first?.url ?? ""),
             delegate: self
         )
         .setup(
@@ -139,15 +154,21 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
         collectionView.deselectItem(at: indexPath, animated: true)
         
         let track = tracks[indexPath.row]
-        PlaybackPresenter.startPlayback(from: self, track: track)
+        PlaybackPresenter.shared.startPlayback(
+            from: self,
+            track: track
+        )
     }
     
 }
 
-extension AlbumViewController: PlaylistHeaderCollectionReusableViewDelegate {
+extension PlaylistViewController: PlaylistHeaderCollectionReusableViewDelegate {
     
     func didTapPlayAll(_ header: PlaylistHeaderCollectionReusableView) {
-        PlaybackPresenter.startPlayback(from: self, tracks: tracks)
+        
+        PlaybackPresenter.shared.startPlayback(
+            from: self,
+            tracks: tracks
+        )
     }
 }
-

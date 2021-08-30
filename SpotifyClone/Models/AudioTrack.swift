@@ -9,13 +9,14 @@ import Foundation
 
 struct AudioTrack: Codable {
     let id, name: String?
-    let album: Album?
+    var album: Album?
     let discNumber: Int?
     let durationMs: Int?
     let artists: [Artist]?
     let availableMarkets: [String]?
     let explicit: Bool?
     let externalUrls: ExternalUrls?
+    let previewURL: String?
 
     enum CodingKeys: String, CodingKey {
         case id, name, album, explicit, artists
@@ -23,5 +24,6 @@ struct AudioTrack: Codable {
         case durationMs = "duration_ms"
         case availableMarkets = "available_markets"
         case externalUrls = "external_urls"
+        case previewURL = "preview_url"
     }
 }

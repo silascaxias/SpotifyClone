@@ -108,7 +108,7 @@ extension SearchViewController: SearchResultsViewControllerDelegate {
                 let safaryViewController = SFSafariViewController(url: url)
                 present(safaryViewController, animated: true)
             case .album(let album): viewController = AlbumViewController(album: album)
-            case .track(let track): return PlaybackPresenter.startPlayback(from: self, track: track)
+            case .track(let track): return PlaybackPresenter.shared.startPlayback(from: self, track: track)
             case .playlist(let playlist): viewController = PlaylistViewController(playlist: playlist)
         }
         

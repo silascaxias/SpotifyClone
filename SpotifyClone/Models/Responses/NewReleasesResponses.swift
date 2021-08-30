@@ -26,7 +26,7 @@ struct Album: Codable {
     let artists: [Artist]?
     let availableMarkets: [String]?
     let releaseDatePrecision: String?
-    let images: [Image]?
+    var images: [Image]?
     let releaseDate: String?
     let name: String?
 
