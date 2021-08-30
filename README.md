@@ -10,9 +10,9 @@ Project in Swift, the objective is to clone the real APP only with native resour
 
 ### Home - Browse, Playlist e Recommended
 
-<img src="home_1.png" width="250">
+<img src="Home_1.png" width="250">
 
-<img src="home_2.png" width="250">
+<img src="Home_2.png" width="250">
 
 ### Search
 
