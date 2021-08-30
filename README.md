@@ -8,7 +8,7 @@ Project in Swift, the objective is to clone the real APP only with native resour
 
 <img src="Splash.png" width="250">
 
-### Home - Browse, Playlist e Recommended
+### Home / Browse - Album, Playlist e Recommended
 
 <img src="Home_1.png" width="250">
 
