@@ -43,9 +43,9 @@ class SettingsViewController: UIViewController {
     }
     
     private func viewProfile() {
-        let viewController = ProfileViewController()
-        viewController.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(viewController, animated: true)
+        let profileViewController = ProfileViewController()
+        profileViewController.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(profileViewController, animated: true)
     }
     
     private func signOutTapped() {

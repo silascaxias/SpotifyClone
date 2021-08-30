@@ -51,6 +51,8 @@ class AlbumViewController: UIViewController {
     
     private let album: Album
     
+    private var tracks = [AudioTrack]()
+    
     init(album: Album) {
         self.album = album
         super.init(nibName: nil, bundle: nil)
@@ -90,6 +92,7 @@ class AlbumViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success(let result):
+                    self?.tracks = result.tracks?.items ?? []
                     self?.viewModels = result.tracks?.items?.compactMap({
                         AlbumTrackCellViewModel(
                             name: $0.name ?? "-",
@@ -105,6 +108,8 @@ class AlbumViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView
+
 extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModels.count
@@ -119,7 +124,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
             name: album.name ?? "-",
             ownerName: album.artists?.first?.name ?? "-",
             description: "Release Date: \(String.formattedDate(string: album.releaseDate ?? "-"))",
-            imageURL: URL(string: album.images?.first?.url ?? "-"),
+            imageURL: URL(string: album.images?.first?.url ?? ""),
             delegate: self
         )
         .setup(
@@ -130,9 +135,11 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        //Play song
+        let track = tracks[indexPath.row]
+        PlaybackPresenter.startPlayback(from: self, track: track)
     }
     
 }
@@ -140,8 +147,7 @@ extension AlbumViewController: UICollectionViewDelegate, UICollectionViewDataSou
 extension AlbumViewController: PlaylistHeaderCollectionReusableViewDelegate {
     
     func didTapPlayAll(_ header: PlaylistHeaderCollectionReusableView) {
-        // Add All playlist to queue
-        print("Playing all")
+        PlaybackPresenter.startPlayback(from: self, tracks: tracks)
     }
 }
 

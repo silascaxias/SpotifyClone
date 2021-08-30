@@ -134,7 +134,7 @@ class HomeViewController: UIViewController {
         sections.append(.newReleases(newAlbums.compactMap({
             return NewReleasesCellViewModell(
                 name: $0.name ?? "-",
-                imageURL: URL(string: $0.images?.first?.url ?? "-"),
+                imageURL: URL(string: $0.images?.first?.url ?? ""),
                 numberOfTracks: $0.totalTracks ?? 0,
                 artistName: $0.artists?.first?.name ?? "-"
             )
@@ -143,7 +143,7 @@ class HomeViewController: UIViewController {
         sections.append(.featuredPlaylist(playlists.compactMap({
             return FeaturedPlaylistCellViewModel(
                 name: $0.name ?? "-",
-                imageURL:URL(string: $0.images?.first?.url ?? "-"),
+                imageURL:URL(string: $0.images?.first?.url ?? ""),
                 creatorName: $0.owner?.displayName ?? "-")
         })))
         
@@ -158,11 +158,13 @@ class HomeViewController: UIViewController {
     }
     
     @objc func didTapSettings() {
-        let viewController = SettingsViewController()
-        viewController.navigationItem.largeTitleDisplayMode = .never
-        navigationController?.pushViewController(viewController, animated: true)
+        let settingsViewController = SettingsViewController()
+        settingsViewController.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(settingsViewController, animated: true)
     }
 }
+
+// MARK: - CollectionView
 
 extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -194,20 +196,26 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         collectionView.deselectItem(at: indexPath, animated: true)
         
+        var viewController = UIViewController()
+        
         let type = sections[indexPath.section]
         switch type {
             case .newReleases(_):
                 let album = newAlbums[indexPath.row]
-                let viewController = AlbumViewController(album: album)
-                viewController.navigationItem.largeTitleDisplayMode = .never
-                navigationController?.pushViewController(viewController, animated: true)
+                viewController = AlbumViewController(album: album)
             case .featuredPlaylist(_):
                 let playlist = playlists[indexPath.row]
-                let viewController = PlaylistViewController(playlist: playlist)
-                viewController.navigationItem.largeTitleDisplayMode = .never
-                navigationController?.pushViewController(viewController, animated: true)
-            case .recommendedTracks(_): break
+                viewController = PlaylistViewController(playlist: playlist)
+            case .recommendedTracks(_):
+                let track = tracks[indexPath.row]
+                return PlaybackPresenter.startPlayback(
+                    from: self,
+                    track: track
+                )
         }
+        
+        viewController.navigationItem.largeTitleDisplayMode = .never
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {

@@ -51,6 +51,8 @@ class PlaylistViewController: UIViewController {
     
     private var viewModels = [RecommendedTrackCellViewModel]()
     
+    private var tracks = [AudioTrack]()
+    
     init(playlist: Playlist) {
         self.playlist = playlist
         super.init(nibName: nil, bundle: nil)
@@ -91,12 +93,12 @@ class PlaylistViewController: UIViewController {
             return
         }
         
-        let viewController = UIActivityViewController(
+        let activityViewController = UIActivityViewController(
             activityItems: [url],
             applicationActivities: []
         )
-        viewController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
-        present(viewController, animated: true)
+        activityViewController.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
+        present(activityViewController, animated: true)
     }
     
     private func fetchData() {
@@ -104,6 +106,7 @@ class PlaylistViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                     case .success(let result):
+                        self?.tracks = result.tracks?.items?.compactMap({ $0.track }) ?? []
                         self?.viewModels = result.tracks?.items?.compactMap({
                             RecommendedTrackCellViewModel(
                                 name: $0.track?.name ?? "-",
@@ -120,6 +123,8 @@ class PlaylistViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView
+
 extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModels.count
@@ -134,7 +139,7 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
             name: playlist.name ?? "-",
             ownerName: playlist.owner?.displayName ?? "-",
             description: playlist.desc ?? "-",
-            imageURL: URL(string: playlist.images?.first?.url ?? "-"),
+            imageURL: URL(string: playlist.images?.first?.url ?? ""),
             delegate: self
         )
         .setup(
@@ -145,9 +150,14 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
         collectionView.deselectItem(at: indexPath, animated: true)
         
-        //Play song
+        let track = tracks[indexPath.row]
+        PlaybackPresenter.startPlayback(
+            from: self,
+            track: track
+        )
     }
     
 }
@@ -155,7 +165,10 @@ extension PlaylistViewController: UICollectionViewDelegate, UICollectionViewData
 extension PlaylistViewController: PlaylistHeaderCollectionReusableViewDelegate {
     
     func didTapPlayAll(_ header: PlaylistHeaderCollectionReusableView) {
-        // Add All playlist to queue
-        print("Playing all")
+        
+        PlaybackPresenter.startPlayback(
+            from: self,
+            tracks: tracks
+        )
     }
 }

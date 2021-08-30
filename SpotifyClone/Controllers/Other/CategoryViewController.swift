@@ -100,6 +100,8 @@ class CategoryViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView
+
 extension CategoryViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -110,13 +112,14 @@ extension CategoryViewController: UICollectionViewDelegate, UICollectionViewData
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let playlist = playlists[indexPath.row]
         
-        return FeaturedPlaylistCellViewModel(name: playlist.name ?? "-", imageURL: URL(string: playlist.images?.first?.url ?? "-"), creatorName: playlist.owner?.displayName ?? "-").setup(collectionView: collectionView, cellForItemAt: indexPath)
+        return FeaturedPlaylistCellViewModel(name: playlist.name ?? "-", imageURL: URL(string: playlist.images?.first?.url ?? ""), creatorName: playlist.owner?.displayName ?? "-").setup(collectionView: collectionView, cellForItemAt: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
-        collectionView.deselectItem(at: indexPath, animated: false)
-        let viewController = PlaylistViewController(playlist: playlists[indexPath.row])
-        navigationController?.pushViewController(viewController, animated: true)
+        collectionView.deselectItem(at: indexPath, animated: true)
+        
+        let playlistViewController = PlaylistViewController(playlist: playlists[indexPath.row])
+        navigationController?.pushViewController(playlistViewController, animated: true)
     }
 }

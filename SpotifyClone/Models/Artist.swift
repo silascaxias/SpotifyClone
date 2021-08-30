@@ -8,13 +8,14 @@
 import Foundation
 
 struct Artist: Codable {
-    let id: String
-    let externalUrls: ExternalUrls
-    let name, type: String
+    let id: String?
+    let externalUrls: ExternalUrls?
+    let name: String?
+    let type: String?
+    let images: [Image]?
 
     enum CodingKeys: String, CodingKey {
-        case id
         case externalUrls = "external_urls"
-        case name, type
+        case name, type, id, images
     }
 }

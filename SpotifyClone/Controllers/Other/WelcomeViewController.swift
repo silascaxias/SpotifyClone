@@ -37,14 +37,14 @@ class WelcomeViewController: UIViewController {
     }
     
     @objc func didTappedSignIn() {
-        let viewController = AuthenticatorViewController()
-        viewController.signInDidCompleted = { [weak self] result in
+        let authenticatorViewController = AuthenticatorViewController()
+        authenticatorViewController.signInDidCompleted = { [weak self] result in
             DispatchQueue.main.async {
                 self?.signInDidCompleted(result: result)
             }
         }
-        viewController.navigationItem.largeTitleDisplayMode = .always
-        navigationController?.pushViewController(viewController, animated: true)
+        authenticatorViewController.navigationItem.largeTitleDisplayMode = .always
+        navigationController?.pushViewController(authenticatorViewController, animated: true)
     }
         
     private func signInDidCompleted(result: Bool) {
