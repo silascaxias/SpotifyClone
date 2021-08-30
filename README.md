@@ -10,9 +10,7 @@ Project in Swift, the objective is to clone the real APP only with native resour
 
 ### Home / Browse - Album, Playlist e Recommended
 
-<img src="Home_1.png" width="250">
-
-<img src="Home_2.png" width="250">
+<img src="Home_1.png" width="250"> <img src="Home_2.png" width="250">
 
 ### Search
 
@@ -28,9 +26,7 @@ Project in Swift, the objective is to clone the real APP only with native resour
 
 ### Song
 
-<img src="Song.png" width="250">
-
-<img src="Song_share.png" width="250">
+<img src="Song.png" width="250"> <img src="Song_share.png" width="250">
 
 ### Profile
 
