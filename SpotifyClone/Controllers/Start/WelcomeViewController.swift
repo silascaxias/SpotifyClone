@@ -11,9 +11,12 @@ class WelcomeViewController: UIViewController {
     
     private let signInButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .white
+        button.backgroundColor = .systemBackground
+        button.tintColor = .label
         button.setTitle("Sign In with Spotify", for: .normal)
-        button.setTitleColor(.blue, for: .normal)
+        button.setTitleColor(.label, for: .normal)
+        button.layer.masksToBounds = true
+        button.layer.cornerRadius = 8.0
         return button
     }()
     
@@ -21,6 +24,7 @@ class WelcomeViewController: UIViewController {
         super.viewDidLoad()
         
         title = "Spotify"
+        navigationController?.navigationBar.tintColor = .label
         view.backgroundColor = .systemGreen
         view.addSubview(signInButton)
         signInButton.addTarget(self, action: #selector(didTappedSignIn), for: .touchUpInside)
@@ -30,7 +34,7 @@ class WelcomeViewController: UIViewController {
         super.viewDidLayoutSubviews()
         signInButton.frame = CGRect(
             x: 20,
-            y: view.height - 50 - view.safeAreaInsets.bottom,
+            y: view.height - 70 - view.safeAreaInsets.bottom,
             width: view.width - 40,
             height: 50
         )

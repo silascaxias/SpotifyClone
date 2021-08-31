@@ -25,7 +25,8 @@ class AuthenticatorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "Sign In"
+        navigationController?.navigationBar.setTransparence()
+        navigationController?.navigationItem.largeTitleDisplayMode = .never
         view.backgroundColor = .systemBackground
         webView.navigationDelegate = self
         view.addSubview(webView)

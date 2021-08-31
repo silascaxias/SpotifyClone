@@ -51,6 +51,9 @@ final class PlaybackPresenter {
             return
         }
         
+        currentTrack?.pause()
+        currentTrack?.seek(to: .zero)
+        
         models.removeAll()
         tracks.append(AVPlayer(url: url))
         models.append(PlaybackModel(songName: track.name, subtitle: track.artists?.first?.name, imageURL: track.album?.images?.first?.url))
